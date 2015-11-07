@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.medapp.medapp.QRCodeFragment">
+
+    <TextView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="BAR CODE SCAN" />
+
+    <FrameLayout
+        android:id="@+id/scanner"
+        android:layout_width="match_parent"
+        android:layout_height="400px">
+    </FrameLayout>
+
+
+    <TextView android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="OR ENTER NID NUMBER" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:hint="NID Number"
+        android:singleLine="true"
+        android:lines="1"
+        android:imeOptions="actionDone"
+        android:id="@+id/nid"
+        />
+</LinearLayout>
