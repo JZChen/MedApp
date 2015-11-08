@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/background"
     tools:context="com.example.medapp.medapp.QRCodeFragment">
 
     <TextView android:layout_width="match_parent"
@@ -25,8 +26,11 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/nidbar"
         android:textAlignment="center"
         android:hint="NID Number"
+        android:textColor="#ffff"
+        android:textColorHighlight="#ffff"
         android:singleLine="true"
         android:lines="1"
         android:imeOptions="actionDone"

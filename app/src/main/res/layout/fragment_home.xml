@@ -1,30 +1,44 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent" tools:context="com.example.medapp.medapp.HomeFragment"
-    android:weightSum="1">
+    >
 
-    <!-- TODO: Update blank fragment layout -->
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="500px"
+        android:background="@drawable/panel"
+        android:layout_alignParentTop="true"
         android:id="@+id/today"
-        android:text="Date"
         android:textAlignment="center" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/today"
+        android:id="@+id/divider"
         android:text="Medications Today"
         android:textAlignment="center" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:id="@+id/todayTextView"
+        android:layout_marginBottom="103dp"
+        android:layout_above="@+id/divider"
+        android:layout_centerHorizontal="true" />
+
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/background"
         android:id="@+id/listView"
         android:layout_gravity="center_horizontal"
+        android:layout_below="@+id/divider"
+        android:layout_alignParentBottom="true"
         />
 
-
-</LinearLayout>
+</RelativeLayout>
