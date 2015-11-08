@@ -1,7 +1,11 @@
 package com.example.medapp.medapp;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
+import android.app.ActionBar.TabListener;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,14 +23,34 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-public class HistoryFragment extends Fragment {
+
+public class HistoryFragment extends Fragment implements TabListener {
 
     private DBHelper dbHelper;
-
+    private ActionBar actionBar;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        actionBar = getActivity().getActionBar();
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar.setDisplayShowTitleEnabled(true);
+
         dbHelper = new DBHelper(this.getActivity());
+        Tab tab1 = actionBar
+                .newTab()
+                .setText("Current Med")
+                .setTabListener(this);
+
+        actionBar.addTab(tab1);
+        actionBar.selectTab(tab1);
+
+        Tab tab2 = actionBar
+                .newTab()
+                .setText("Past Med")
+                .setTabListener(this);
+
+        actionBar.addTab(tab2);
+
     }
 
 
@@ -35,6 +59,9 @@ public class HistoryFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_history, container, false);
+
+
+
 
 
         TextView toadyText = (TextView)view.findViewById(R.id.today);
@@ -50,7 +77,7 @@ public class HistoryFragment extends Fragment {
         ArrayAdapter<String> adapter = new ScheduleAdapter(this.getActivity(),R.layout.listhistory,getAllMedication());
         listView.setAdapter(adapter);
 
-
+        actionBar.show();
         return view;
     }
 
@@ -101,5 +128,33 @@ public class HistoryFragment extends Fragment {
 
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        actionBar.removeAllTabs();
+        actionBar.hide();
+    }
+
+    @Override
+    public void onTabSelected(Tab tab, FragmentTransaction ft) {
+        // TODO Auto-generated method stub
+
+    }
+
+
+
+    @Override
+    public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+        // TODO Auto-generated method stub
+
+    }
+
+
+
+    @Override
+    public void onTabReselected(Tab tab, FragmentTransaction ft) {
+        // TODO Auto-generated method stub
+
+    }
 
 }
