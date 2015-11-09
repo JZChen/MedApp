@@ -12,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,13 +39,7 @@ public class HomeFragment extends Fragment {
         ListView listView = (ListView)view.findViewById(R.id.listView);
         ImageButton addButton = (ImageButton)view.findViewById(R.id.addbutton);
 
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // temporary add mock-up data
-                addMockData();
-            }
-        });
+
 
         DateFormat df = new SimpleDateFormat("EEEE\nMM/dd/yyyy\nHH:mm:ss a");
         Date today = Calendar.getInstance().getTime();
@@ -56,9 +49,19 @@ public class HomeFragment extends Fragment {
         toadyText.setTypeface(FontManager.getProximaNovaBold(context));
 
 
-        ArrayAdapter<String> adapter = new ScheduleAdapter(this.getActivity(),R.layout.listhistory,getAllMedication());
+        final ArrayAdapter<String> adapter = new ScheduleAdapter(this.getActivity(),R.layout.listhistory,getAllMedication());
         listView.setAdapter(adapter);
 
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // temporary add mock-up data
+                addMockData();
+                adapter.clear();
+                adapter.addAll(getAllMedication());
+                adapter.notifyDataSetChanged();
+            }
+        });
 
         return view;
     }
@@ -71,12 +74,32 @@ public class HomeFragment extends Fragment {
 
             String date = "";
             while(cc.moveToNext()){
-                date += cc.getString(1) + "\n";
+                date += cc.getString(1) + " ";
                 System.out.println(date);
 
             }
 
-            list.add(c.getString(0)+" "+c.getString(1)+" "+date);
+            //list.add(c.getString(0)+" "+c.getString(1)+" "+date);
+            // Get today's 00:00
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            long unixTimeStamp = calendar.getTimeInMillis();
+
+            String str = c.getString(0)+" "+c.getString(1)+" "+date;
+            String[] med = str.split(" ");
+            for(int i=2;i<med.length;i++){
+                Long epochDate = Long.valueOf(med[i]);
+                if(unixTimeStamp < epochDate && unixTimeStamp+86400000 > epochDate ){
+                    DateFormat df = new SimpleDateFormat("HH:mm:ss a");
+                    String reportDate = df.format(epochDate);
+                    list.add(med[1]+" "+reportDate);
+                }
+            }
+
         }
 
         return list;
@@ -89,26 +112,24 @@ public class HomeFragment extends Fragment {
         DBHelper db = new DBHelper(this.getActivity().getApplicationContext());
         Calendar c = Calendar.getInstance();
         long currentTime = c.getTimeInMillis();
-        currentTime -= 3*60*1000;
-        ArrayList<String> schedule = new ArrayList<>();
+        // 3*60*1000
+        currentTime -= 86400*1000 ;
+        ArrayList<String> schedule = new ArrayList<String>();
         for(int i=0;i<3;i++){
             schedule.add(String.valueOf(currentTime));
-            currentTime += 3*60*1000;
+            currentTime += 86400*1000;
 
             ScheduleManager.addAlarm(context,currentTime);
             ScheduleManager.addEvent(context, currentTime, "med1");
 
         }
-        for(String i : schedule){
-            System.out.println("wtf "+i);
-        }
 
         boolean result = db.insertMedication("med1",100,schedule);
         if( !result ){
-            Toast.makeText(this.getActivity(), "Fail to insert", Toast.LENGTH_LONG).show();
+           // Toast.makeText(this.getActivity(), "Fail to insert", Toast.LENGTH_LONG).show();
         }
 
-        Toast.makeText(context, "Reminder clicked", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context, "Reminder clicked", Toast.LENGTH_SHORT).show();
 
         int i = 1;
         while(!result){
@@ -148,8 +169,8 @@ public class HomeFragment extends Fragment {
                 TextView time = (TextView)row.findViewById(R.id.time);
                 String str = this.data.get(position);
                 System.out.println(str);
-                medication.setText( str.split(" ")[1] );
-                time.setText( str.split(" ")[2] );
+                medication.setText( str.split(" ")[0] );
+                time.setText( str.split(" ")[1] );
 
             }
 
