@@ -27,6 +27,7 @@ public class MainActivity extends Activity {
         tab1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 FragmentManager fragMgr = getFragmentManager();
                 FragmentTransaction transaction = fragMgr.beginTransaction();
                 HistoryFragment historyFrag = new HistoryFragment();

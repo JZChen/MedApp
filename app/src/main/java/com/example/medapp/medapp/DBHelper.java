@@ -59,7 +59,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return null;
     }
 
-    public boolean insertMedication(String name,Integer NID,ArrayList<Integer> schedule){
+    public boolean insertMedication(String name,Integer NID,ArrayList<String> schedule){
 
         try{
             Cursor c = this.getReadableDatabase().rawQuery( "SELECT * FROM medication where name = '"+name+"'",null);
@@ -90,15 +90,15 @@ public class DBHelper extends SQLiteOpenHelper {
         String medSchedule = "medsche_" + name;
         db.execSQL(
                 "create table " + medSchedule +
-                        "(id integer primary key,schetime integer, taketime integer)"
+                        "(id integer primary key,schetime text, taketime text)"
         );
 
 
-        for(Integer i : schedule){
-            System.out.println(i);
+        for(String i : schedule){
+            System.out.println("why? "+i);
             ContentValues contentValues2 = new ContentValues();
             contentValues2.put("schetime", i);
-            contentValues2.put("taketime", -1);
+            contentValues2.put("taketime", "n");
             db.insert(medSchedule, null, contentValues2);
         }
 

@@ -19,33 +19,36 @@
         android:orientation="horizontal"
         android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="140px"
+        android:layout_height="100px"
         android:layout_alignParentBottom="true"
         >
 
-        <ImageView
+        <ImageButton
             android:id="@+id/tab1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="tab1"
             android:src="@drawable/history"
+            android:scaleType="fitXY"
             />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/tab2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/home"
+            android:scaleType="fitXY"
             />
 
-        <ImageView
+        <ImageButton
             android:id="@+id/tab3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:src="@drawable/interact"
+            android:scaleType="fitXY"
             />
     </LinearLayout>
 

@@ -9,8 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,11 +22,12 @@ import java.util.Date;
 
 public class HomeFragment extends Fragment {
     private DBHelper dbHelper;
-
+    private Context context = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         dbHelper = new DBHelper(this.getActivity());
+        context = this.getActivity().getApplicationContext();
     }
 
     @Override
@@ -33,14 +36,24 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        TextView toadyText = (TextView)view.findViewById(R.id.todayTextView);
+        TextView toadyText = (TextView)view.findViewById(R.id.today);
         ListView listView = (ListView)view.findViewById(R.id.listView);
+        ImageButton addButton = (ImageButton)view.findViewById(R.id.addbutton);
 
-        DateFormat df = new SimpleDateFormat("EEEE \n MM/dd/yyyy HH:mm:ss a");
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // temporary add mock-up data
+                addMockData();
+            }
+        });
+
+        DateFormat df = new SimpleDateFormat("EEEE\nMM/dd/yyyy\nHH:mm:ss a");
         Date today = Calendar.getInstance().getTime();
 
         String reportDate = df.format(today);
         toadyText.setText(reportDate);
+        toadyText.setTypeface(FontManager.getProximaNovaBold(context));
 
 
         ArrayAdapter<String> adapter = new ScheduleAdapter(this.getActivity(),R.layout.listhistory,getAllMedication());
@@ -58,8 +71,7 @@ public class HomeFragment extends Fragment {
 
             String date = "";
             while(cc.moveToNext()){
-                Integer i = cc.getInt(1);
-                date += String.valueOf(i) + "\n";
+                date += cc.getString(1) + "\n";
                 System.out.println(date);
 
             }
@@ -68,6 +80,44 @@ public class HomeFragment extends Fragment {
         }
 
         return list;
+    }
+
+
+    private void addMockData(){
+
+
+        DBHelper db = new DBHelper(this.getActivity().getApplicationContext());
+        Calendar c = Calendar.getInstance();
+        long currentTime = c.getTimeInMillis();
+        currentTime -= 3*60*1000;
+        ArrayList<String> schedule = new ArrayList<>();
+        for(int i=0;i<3;i++){
+            schedule.add(String.valueOf(currentTime));
+            currentTime += 3*60*1000;
+
+            ScheduleManager.addAlarm(context,currentTime);
+            ScheduleManager.addEvent(context, currentTime, "med1");
+
+        }
+        for(String i : schedule){
+            System.out.println("wtf "+i);
+        }
+
+        boolean result = db.insertMedication("med1",100,schedule);
+        if( !result ){
+            Toast.makeText(this.getActivity(), "Fail to insert", Toast.LENGTH_LONG).show();
+        }
+
+        Toast.makeText(context, "Reminder clicked", Toast.LENGTH_SHORT).show();
+
+        int i = 1;
+        while(!result){
+            String med = "med";
+            result = db.insertMedication(med+String.valueOf(i),100,schedule);
+            i++;
+        }
+
+
     }
 
 
@@ -97,7 +147,7 @@ public class HomeFragment extends Fragment {
                 TextView medication = (TextView)row.findViewById(R.id.medication);
                 TextView time = (TextView)row.findViewById(R.id.time);
                 String str = this.data.get(position);
-
+                System.out.println(str);
                 medication.setText( str.split(" ")[1] );
                 time.setText( str.split(" ")[2] );
 
